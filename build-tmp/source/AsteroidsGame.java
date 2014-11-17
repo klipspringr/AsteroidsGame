@@ -1,3 +1,19 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class AsteroidsGame extends PApplet {
+
 SpaceShip serenity;
 Stars[] billy;
 Asteroid[] hailey;
@@ -50,11 +66,11 @@ public void keyPressed()
     }
     if(keyCode == UP)
     {
-      serenity.accelerate(.5);
+      serenity.accelerate(.5f);
     }
     if(keyCode == DOWN)
     {
-      serenity.accelerate(-.2);
+      serenity.accelerate(-.2f);
     }
     if(keyCode == ENTER || keyCode == RETURN)
     {
@@ -187,7 +203,7 @@ class Stars
     isMoving = true;
     opacity = 255;
   }
-  void show()
+  public void show()
   {
 
     fill(242,242,242,opacity);
@@ -200,12 +216,12 @@ class Stars
     line(x - 4, y +4, x+4, y-4);
     stroke(0);
   }
-  void base()
+  public void base()
   {
     fill(0);
     ellipse(x, y, 12, 12);
   }
-  void move()
+  public void move()
   {
     if (isMoving == true)
     {
@@ -213,7 +229,7 @@ class Stars
       opacity = (int)((Math.random()*150)+105);
     }
   }
-  void wrap()
+  public void wrap()
   {
     if(x >= 800)
     {
@@ -313,4 +329,13 @@ class Asteroid extends Floater
     stroke(0);
   }  
   
+}
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "AsteroidsGame" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }
