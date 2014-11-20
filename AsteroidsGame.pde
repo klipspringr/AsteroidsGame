@@ -1,6 +1,7 @@
 SpaceShip serenity;
 Stars[] billy;
-Asteroid[] hailey;
+// Asteroid[] hailey;
+ArrayList <Asteroid> hailey = new ArrayList <Asteroid>();
 
 public void setup() 
 {
@@ -13,11 +14,15 @@ public void setup()
     billy[i] = new Stars();
   }
   serenity = new SpaceShip();
-  hailey = new Asteroid[8];
-  for (int i = 0; i < hailey.length; i++)
+  // hailey = new Asteroid[8];
+  // for (int i = 0; i < hailey.length; i++)
+  // {
+  //   hailey[i] = new Asteroid();
+  //   hailey[i].move();
+  // }
+  for (int i = 0; i<8; i++)
   {
-    hailey[i] = new Asteroid();
-    hailey[i].move();
+    hailey.add(new Asteroid());
   }
 }
 public void draw() 
@@ -32,10 +37,16 @@ public void draw()
     }
   serenity.move();
   serenity.show();
-  for (int i = 0; i < hailey.length; i++)
+  for (int i = 0; i < hailey.size(); i++)
     {
-      hailey[i].move();
-      hailey[i].show();
+      hailey.get(i).move();
+      hailey.get(i).show();
+      if(dist((float)hailey.get(i).getX(), (float)hailey.get(i).getY(), (float)serenity.myCenterX, (float)serenity.myCenterY) <=(8*hailey.get(i).sizeFactor))
+     {
+
+      hailey.remove(i);
+     }
+      // hailey.get(i).currentIndex = i;
     }
 }
 public void keyPressed()
@@ -51,6 +62,7 @@ public void keyPressed()
     if(keyCode == UP)
     {
       serenity.accelerate(.5);
+      serenity.accelerate(-.1);
     }
     if(keyCode == DOWN)
     {
@@ -225,13 +237,12 @@ class Stars
 
 class Asteroid extends Floater
 {
-  public int asteroidRotation;
-  private int sizeFactor;
+  public int asteroidRotation, sizeFactor;
   Asteroid()
   {
     corners = 9;
     myColor = color(173);
-    sizeFactor = (int)((Math.random()*6)+3);
+    sizeFactor = (int)((Math.random()*4)+2);
     xCorners = new int[corners];
     yCorners = new int[corners];
     xCorners[0] = 6 * sizeFactor;
@@ -272,6 +283,7 @@ class Asteroid extends Floater
 
   public void move()
   { 
+ 
     myCenterX += myDirectionX;    
     myCenterY += myDirectionY;     
 
@@ -292,7 +304,8 @@ class Asteroid extends Floater
     {     
       myCenterY = height;    
     }  
-     myPointDirection+=asteroidRotation;  
+     myPointDirection+=asteroidRotation; 
+     
   }
   public void show()
   {
