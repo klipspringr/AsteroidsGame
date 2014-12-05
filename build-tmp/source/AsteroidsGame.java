@@ -66,12 +66,12 @@ public void draw()
   outer:  
   for (int i = 0; i < hailey.size(); i++)
   {
-    // hailey.get(i).move();
+    hailey.get(i).move();
     hailey.get(i).show();
     if(dist((float)hailey.get(i).getX(), (float)hailey.get(i).getY(), (float)serenity.myCenterX, (float)serenity.myCenterY) <=(8*hailey.get(i).sizeFactor))
     {
       hailey.remove(i);
-      println("removed by collision");
+      // println("removed by collision");
       break;
     }
     for (int j = 0; j < buffaloBill.size(); j++)
@@ -84,7 +84,7 @@ public void draw()
         // System.out.println("Asteroid " + i);?
         buffaloBill.remove(j);
         // System.out.println("Bullet " + j);
-        println("removed by bullet");
+        // println("removed by bullet");
         break outer;
       } 
     
@@ -97,20 +97,20 @@ public void keyPressed()
 {
     if(keyCode == LEFT) 
     {
-      serenity.rotate(-10);
+      serenity.rotate(-13);
     }
     if(keyCode == RIGHT)
     {
-      serenity.rotate(10);
+      serenity.rotate(13);
     }
     if(keyCode == UP)
     {
       serenity.accelerate(.5f);
-      serenity.accelerate(-.1f);
+      serenity.booster();
     }
     if(keyCode == DOWN)
     {
-      serenity.accelerate(-.2f);
+      serenity.accelerate(-.5f);
     }
     if(keyCode == ENTER || keyCode == RETURN)
     {
@@ -122,7 +122,7 @@ public void keyPressed()
     }
     if(keyCode == TAB)
     {
-      System.out.println("hailey: "+hailey);
+    
       buffaloBill.add(new Bullet(serenity));
     }
 
@@ -261,6 +261,9 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
 } 
 class SpaceShip extends Floater  
 {   
+  private int[] bxCorners;   
+  private int[] byCorners;  
+  private int bCorners;
   SpaceShip()
   {
     corners = 4;
@@ -280,6 +283,23 @@ class SpaceShip extends Floater
     myDirectionX = 0;
     myDirectionY = 0;
     myPointDirection = 0;
+
+    bCorners = 6;
+    bxCorners = new int[bCorners];
+    byCorners = new int[bCorners];
+    bxCorners[0] = 2;
+    byCorners[0] = 0;
+    bxCorners[1] = -12;
+    byCorners[1] = 5;
+    bxCorners[2] = -9;
+    byCorners[2] = 3;
+    bxCorners[3] = -10;
+    byCorners[3] = 0;
+    bxCorners[4] = -9;
+    byCorners[4] = -3;
+    bxCorners[5] = -12;
+    byCorners[5] = -5;
+
   }
   public void setX(int x){myCenterX = x;}
   public int getX(){return (int)myCenterX;}
@@ -291,6 +311,25 @@ class SpaceShip extends Floater
   public double getDirectionY(){return myDirectionY;}
   public void setPointDirection(int degrees){myPointDirection = degrees;}
   public double getPointDirection(){return myPointDirection;}
+  public void booster()
+  {
+    fill(0);   
+    stroke(255, 174, 61);    
+    //convert degrees to radians for sin and cos         
+    double dRadians = myPointDirection*(Math.PI/180);                 
+    int xRotatedTranslated, yRotatedTranslated;    
+    beginShape();         
+    for(int nI = 0; nI < corners; nI++)    
+    {     
+      //rotat                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 e and translate the coordinates of the floater using current direction 
+      xRotatedTranslated = (int)((bxCorners[nI]* Math.cos(dRadians)) - (byCorners[nI] * Math.sin(dRadians))+myCenterX);     
+      yRotatedTranslated = (int)((bxCorners[nI]* Math.sin(dRadians)) + (byCorners[nI] * Math.cos(dRadians))+myCenterY);      
+      vertex(xRotatedTranslated,yRotatedTranslated);    
+    }   
+    endShape(CLOSE);  
+    stroke(0);
+
+  }
 }
 class Asteroid extends Floater
 {
