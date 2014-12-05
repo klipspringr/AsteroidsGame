@@ -16,26 +16,21 @@ public class AsteroidsGame extends PApplet {
 
 SpaceShip serenity;
 Stars[] billy;
-// Asteroid[] hailey;
 ArrayList <Asteroid> hailey = new ArrayList <Asteroid>();
+ArrayList <Bullet> buffaloBill = new ArrayList <Bullet>();
 
 public void setup() 
 {
   size(800,800);
   background(0);
-  frameRate(30);
+  // frameRate(25);
   billy = new Stars[80];
   for (int i = 0; i < billy.length; i++)
   {
     billy[i] = new Stars();
   }
   serenity = new SpaceShip();
-  // hailey = new Asteroid[8];
-  // for (int i = 0; i < hailey.length; i++)
-  // {
-  //   hailey[i] = new Asteroid();
-  //   hailey[i].move();
-  // }
+  
   for (int i = 0; i<8; i++)
   {
     hailey.add(new Asteroid());
@@ -45,25 +40,58 @@ public void draw()
 {
   background(0);
   for (int i = 0; i < billy.length; i++)
-    {
-      billy[i].base();
-      billy[i].wrap();
-      billy[i].move();
-      billy[i].show();
-    }
+  {
+    billy[i].base();
+    billy[i].wrap();
+    billy[i].move();
+    billy[i].show();
+  }
   serenity.move();
   serenity.show();
-  for (int i = 0; i < hailey.size(); i++)
+  
+  // outer:
+  for (int i = 0; i < buffaloBill.size(); i++)
+  {
+    buffaloBill.get(i).move();
+    buffaloBill.get(i).show();
+    if (buffaloBill.get(i).getX() > 800 || buffaloBill.get(i).getX() < 0 || buffaloBill.get(i).getY() > 800 || buffaloBill.get(i).getY() < 0)
     {
-      hailey.get(i).move();
-      hailey.get(i).show();
-      if(dist((float)hailey.get(i).getX(), (float)hailey.get(i).getY(), (float)serenity.myCenterX, (float)serenity.myCenterY) <=(8*hailey.get(i).sizeFactor))
-     {
-
-      hailey.remove(i);
-     }
-      // hailey.get(i).currentIndex = i;
+      buffaloBill.remove(i);
+      // break outer;
+      break;
     }
+
+  }
+
+  outer:  
+  for (int i = 0; i < hailey.size(); i++)
+  {
+    // hailey.get(i).move();
+    hailey.get(i).show();
+    if(dist((float)hailey.get(i).getX(), (float)hailey.get(i).getY(), (float)serenity.myCenterX, (float)serenity.myCenterY) <=(8*hailey.get(i).sizeFactor))
+    {
+      hailey.remove(i);
+      println("removed by collision");
+      break;
+    }
+    for (int j = 0; j < buffaloBill.size(); j++)
+    {
+
+      if(dist((float)hailey.get(i).getX(), (float)hailey.get(i).getY(), (float)buffaloBill.get(j).getX(), (float)buffaloBill.get(j).getY()) <=(8*hailey.get(i).getSizeFactor()))
+      {
+        
+        hailey.remove(i);
+        // System.out.println("Asteroid " + i);?
+        buffaloBill.remove(j);
+        // System.out.println("Bullet " + j);
+        println("removed by bullet");
+        break outer;
+      } 
+    
+   }
+  }
+
+  
 }
 public void keyPressed()
 {
@@ -92,40 +120,68 @@ public void keyPressed()
       serenity.setDirectionY(0);
       serenity.setPointDirection((int)(Math.random()*360));
     }
+    if(keyCode == TAB)
+    {
+      System.out.println("hailey: "+hailey);
+      buffaloBill.add(new Bullet(serenity));
+    }
+
 }
-class SpaceShip extends Floater  
-{   
-  SpaceShip()
+class Stars 
+{
+  int y, opacity;
+  float x;
+  boolean isMoving;
+  Stars()
   {
-    corners = 4;
-    myColor = color(140);
-    xCorners = new int[corners];
-    yCorners = new int[corners];
-    xCorners[0] = -8;
-    yCorners[0] = -8;
-    xCorners[1] = 16;
-    yCorners[1] = 0;
-    xCorners[2] = -8;
-    yCorners[2] = 8;
-    xCorners[3] = -2;
-    yCorners[3] = 0;
-    myCenterX = 400;
-    myCenterY = 400;
-    myDirectionX = 0;
-    myDirectionY = 0;
-    myPointDirection = 0;
+    x = ((int)(random(0, 800)));
+    y = ((int)(random(0, 800)));
+    isMoving = true;
+    opacity = 255;
   }
-  public void setX(int x){myCenterX = x;}
-  public int getX(){return (int)myCenterX;}
-  public void setY(int y){myCenterY = y;}
-  public int getY(){return (int)myCenterY;}
-  public void setDirectionX(double x){myDirectionX = x;}
-  public double getDirectionX(){return myDirectionX;}
-  public void setDirectionY(double y){myDirectionY = y;}
-  public double getDirectionY(){return myCenterY;}
-  public void setPointDirection(int degrees){myPointDirection = degrees;}
-  public double getPointDirection(){return myPointDirection;}
+  public void show()
+  {
+
+    fill(242,242,242,opacity);
+    stroke(0);
+    ellipse(x, y, 7, 7) ;
+    stroke(255, opacity);
+    line(x - 4, y - 4, x + 4, y + 4); //diagonal top left
+    line(x, y + 5, x, y - 5); //perpendicular
+    line(x + 5, y, x - 5, y); //horizontal
+    line(x - 4, y +4, x+4, y-4);
+    stroke(0);
+     fill(0, 255, 0);   
+    stroke(0, 255, 0);  
+
+  }
+  public void base()
+  {
+    fill(0);
+    stroke(0);
+
+    ellipse(x, y, 12, 12);
+    fill(0,255,0);
+    stroke(0,255,0);
+  }
+  public void move()
+  {
+    if (isMoving == true)
+    {
+      x+= 0.5f;
+      opacity = (int)((Math.random()*150)+105);
+    }
+  }
+  public void wrap()
+  {
+    if(x >= 800)
+    {
+      x = 0;
+      y = ((int)(random(0, 800)));
+    }
+  }
 }
+
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
   protected int corners;  //the number of corners, a triangular floater has 3   
@@ -203,57 +259,42 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
     stroke(0);
   }  
 } 
-
-class Stars 
-{
-  int x, y, opacity;
-  boolean isMoving;
-  Stars()
+class SpaceShip extends Floater  
+{   
+  SpaceShip()
   {
-    x = ((int)(random(0, 800)));
-    y = ((int)(random(0, 800)));
-    isMoving = true;
-    opacity = 255;
+    corners = 4;
+    myColor = color(140);
+    xCorners = new int[corners];
+    yCorners = new int[corners];
+    xCorners[0] = -8;
+    yCorners[0] = -8;
+    xCorners[1] = 16;
+    yCorners[1] = 0;
+    xCorners[2] = -8;
+    yCorners[2] = 8;
+    xCorners[3] = -2;
+    yCorners[3] = 0;
+    myCenterX = 400;
+    myCenterY = 400;
+    myDirectionX = 0;
+    myDirectionY = 0;
+    myPointDirection = 0;
   }
-  public void show()
-  {
-
-    fill(242,242,242,opacity);
-    stroke(0);
-    ellipse(x, y, 7, 7) ;
-    stroke(255, opacity);
-    line(x - 4, y - 4, x + 4, y + 4); //diagonal top left
-    line(x, y + 5, x, y - 5); //perpendicular
-    line(x + 5, y, x - 5, y); //horizontal
-    line(x - 4, y +4, x+4, y-4);
-    stroke(0);
-  }
-  public void base()
-  {
-    fill(0);
-    ellipse(x, y, 12, 12);
-  }
-  public void move()
-  {
-    if (isMoving == true)
-    {
-      x++;
-      opacity = (int)((Math.random()*150)+105);
-    }
-  }
-  public void wrap()
-  {
-    if(x >= 800)
-    {
-      x = 0;
-      y = ((int)(random(0, 800)));
-    }
-  }
+  public void setX(int x){myCenterX = x;}
+  public int getX(){return (int)myCenterX;}
+  public void setY(int y){myCenterY = y;}
+  public int getY(){return (int)myCenterY;}
+  public void setDirectionX(double x){myDirectionX = x;}
+  public double getDirectionX(){return myDirectionX;}
+  public void setDirectionY(double y){myDirectionY = y;}
+  public double getDirectionY(){return myDirectionY;}
+  public void setPointDirection(int degrees){myPointDirection = degrees;}
+  public double getPointDirection(){return myPointDirection;}
 }
-
 class Asteroid extends Floater
 {
-  public int asteroidRotation, sizeFactor;
+  private int asteroidRotation, sizeFactor;
   Asteroid()
   {
     corners = 9;
@@ -293,9 +334,10 @@ class Asteroid extends Floater
   public void setDirectionX(double x){myDirectionX = x;}
   public double getDirectionX(){return myDirectionX;}
   public void setDirectionY(double y){myDirectionY = y;}
-  public double getDirectionY(){return myCenterY;}
+  public double getDirectionY(){return myDirectionY;}
   public void setPointDirection(int degrees){myPointDirection = degrees;}
   public double getPointDirection(){return myPointDirection;}
+  public int getSizeFactor(){return sizeFactor;}
 
   public void move()
   { 
@@ -342,6 +384,43 @@ class Asteroid extends Floater
     stroke(0);
   }  
   
+}
+class Bullet extends Floater
+{
+
+  Bullet(SpaceShip theShip)
+  {
+    myCenterX = theShip.getX();
+    myCenterY = theShip.getY();
+    myPointDirection = theShip.getPointDirection();
+    double dRadians = myPointDirection*(Math.PI/180);    
+    myDirectionX = 5 * Math.cos(dRadians) + theShip.getDirectionX();
+    myDirectionY = 5 * Math.sin(dRadians) + theShip.getDirectionY();
+  }
+  public void setX(int x){myCenterX = x;}
+  public int getX(){return (int)myCenterX;}
+  public void setY(int y){myCenterY = y;}
+  public int getY(){return (int)myCenterY;}
+  public void setDirectionX(double x){myDirectionX = x;}
+  public double getDirectionX(){return myDirectionX;}
+  public void setDirectionY(double y){myDirectionY = y;}
+  public double getDirectionY(){return myDirectionY;}
+  public void setPointDirection(int degrees){myPointDirection = degrees;}
+  public double getPointDirection(){return myPointDirection;}
+  public void show()
+  {
+    fill(0, 255, 0);   
+    stroke(0, 255, 0);    
+    ellipse((float)myCenterX, (float)myCenterY, 5, 5);
+    
+  }
+  public void move()
+  {
+
+    myCenterX += myDirectionX;    
+    myCenterY += myDirectionY;  
+  }
+
 }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "AsteroidsGame" };
