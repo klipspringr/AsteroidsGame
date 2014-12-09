@@ -18,10 +18,12 @@ SpaceShip serenity;
 Stars[] billy;
 ArrayList <Asteroid> hailey = new ArrayList <Asteroid>();
 ArrayList <Bullet> buffaloBill = new ArrayList <Bullet>();
+boolean keyz[] = new boolean [1];
 
 public void setup() 
 {
   size(800,800);
+  smooth();
   background(0);
   // frameRate(25);
   billy = new Stars[80];
@@ -56,12 +58,22 @@ public void draw()
     buffaloBill.get(i).show();
     if (buffaloBill.get(i).getX() > 800 || buffaloBill.get(i).getX() < 0 || buffaloBill.get(i).getY() > 800 || buffaloBill.get(i).getY() < 0)
     {
+      // if (keyz[i])
+      {
       buffaloBill.remove(i);
       // break outer;
       break;
     }
+    }
+  }
+  
+  for (int i = 0; i < keyz.length; i++) {
+    if (keyz[i]) {
+      buffaloBill.add(new Bullet(serenity));
+    }
 
   }
+
 
   outer:  
   for (int i = 0; i < hailey.size(); i++)
@@ -122,11 +134,25 @@ public void keyPressed()
     }
     if(keyCode == TAB)
     {
-    
-      buffaloBill.add(new Bullet(serenity));
+      // key
+      // buffaloBill.add(new Bullet(serenity));
+      keyz[0] = true;
+      // keyz[1] = true;
+
     }
 
 }
+public void keyReleased() {
+  if(keyCode == TAB)
+    {
+      // key
+      // buffaloBill.add(new Bullet(serenity));
+      keyz[0] = false;
+      // keyz[1] = false;
+
+    }
+}
+
 class Stars 
 {
   int y, opacity;
@@ -287,18 +313,24 @@ class SpaceShip extends Floater
     bCorners = 6;
     bxCorners = new int[bCorners];
     byCorners = new int[bCorners];
-    bxCorners[0] = 2;
+
+    bxCorners[0] = -2;
     byCorners[0] = 0;
-    bxCorners[1] = -12;
-    byCorners[1] = 5;
+
+    bxCorners[1] = -11;
+    byCorners[1] = 7;
+
     bxCorners[2] = -9;
-    byCorners[2] = 3;
+    byCorners[2] = 5;
+
     bxCorners[3] = -10;
     byCorners[3] = 0;
+
     bxCorners[4] = -9;
-    byCorners[4] = -3;
-    bxCorners[5] = -12;
-    byCorners[5] = -5;
+    byCorners[4] = -5;
+
+    bxCorners[5] = -11;
+    byCorners[5] = -7;
 
   }
   public void setX(int x){myCenterX = x;}
@@ -315,11 +347,12 @@ class SpaceShip extends Floater
   {
     fill(0);   
     stroke(255, 174, 61);    
+    strokeWeight(3);
     //convert degrees to radians for sin and cos         
     double dRadians = myPointDirection*(Math.PI/180);                 
     int xRotatedTranslated, yRotatedTranslated;    
     beginShape();         
-    for(int nI = 0; nI < corners; nI++)    
+    for(int nI = 0; nI < bCorners; nI++)    
     {     
       //rotat                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 e and translate the coordinates of the floater using current direction 
       xRotatedTranslated = (int)((bxCorners[nI]* Math.cos(dRadians)) - (byCorners[nI] * Math.sin(dRadians))+myCenterX);     
@@ -327,9 +360,32 @@ class SpaceShip extends Floater
       vertex(xRotatedTranslated,yRotatedTranslated);    
     }   
     endShape(CLOSE);  
+    // fill(0);
     stroke(0);
+    strokeWeight(1);
+
 
   }
+  public void show ()  //Draws the floater at the current position  
+  {             
+    stroke(242, 5, 5);   
+    fill(0);    
+    strokeWeight(4);
+    //convert degrees to radians for sin and cos         
+    double dRadians = myPointDirection*(Math.PI/180);                 
+    int xRotatedTranslated, yRotatedTranslated;    
+    beginShape();         
+    for(int nI = 0; nI < corners; nI++)    
+    {     
+      //rotat                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 e and translate the coordinates of the floater using current direction 
+      xRotatedTranslated = (int)((xCorners[nI]* Math.cos(dRadians)) - (yCorners[nI] * Math.sin(dRadians))+myCenterX);     
+      yRotatedTranslated = (int)((xCorners[nI]* Math.sin(dRadians)) + (yCorners[nI] * Math.cos(dRadians))+myCenterY);      
+      vertex(xRotatedTranslated,yRotatedTranslated);    
+    }   
+    endShape(CLOSE);  
+    stroke(0);
+    strokeWeight(1);
+  }  
 }
 class Asteroid extends Floater
 {
@@ -338,7 +394,7 @@ class Asteroid extends Floater
   {
     corners = 9;
     myColor = color(173);
-    sizeFactor = (int)((Math.random()*4)+2);
+    sizeFactor = (int)((Math.random()*6)+3);
     xCorners = new int[corners];
     yCorners = new int[corners];
     xCorners[0] = 6 * sizeFactor;
@@ -361,10 +417,10 @@ class Asteroid extends Floater
     yCorners[8] = 6* sizeFactor;
     myCenterX = (int)((Math.random()*800));;
     myCenterY = (int)((Math.random()*800));;
-    myDirectionX = (int)((Math.random()*8)-4);
-    myDirectionY = (int)((Math.random()*8)-4);
+    myDirectionX = (int)((Math.random()*6)-3);
+    myDirectionY = (int)((Math.random()*6)-3);
     myPointDirection = 0;
-    asteroidRotation = (int)((Math.random()*20)-10);
+    asteroidRotation = (int)((Math.random()*16)-8);
   }
   public void setX(int x){myCenterX = x;}
   public int getX(){return (int)myCenterX;}
@@ -406,8 +462,9 @@ class Asteroid extends Floater
   }
   public void show()
   {
-    fill(173);   
-    stroke(150);    
+    fill(0);   
+    stroke(130);
+    strokeWeight(6);    
     //convert degrees to radians for sin and cos         
     double dRadians = myPointDirection*(Math.PI/180);                 
     int xRotatedTranslated, yRotatedTranslated;    
@@ -421,6 +478,7 @@ class Asteroid extends Floater
     }   
     endShape(CLOSE);  
     stroke(0);
+    strokeWeight(1);
   }  
   
 }
@@ -448,7 +506,7 @@ class Bullet extends Floater
   public double getPointDirection(){return myPointDirection;}
   public void show()
   {
-    fill(0, 255, 0);   
+    fill(0);   
     stroke(0, 255, 0);    
     ellipse((float)myCenterX, (float)myCenterY, 5, 5);
     
