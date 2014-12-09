@@ -7,7 +7,7 @@ boolean keyz[] = new boolean [1];
 public void setup() 
 {
   size(800,800);
-  smooth();
+  // smooth();
   background(0);
   // frameRate(25);
   billy = new Stars[80];
