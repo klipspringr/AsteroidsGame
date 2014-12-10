@@ -7,9 +7,7 @@ boolean keyz[] = new boolean [1];
 public void setup() 
 {
   size(800,800);
-  // smooth();
   background(0);
-  // frameRate(25);
   billy = new Stars[80];
   for (int i = 0; i < billy.length; i++)
   {
@@ -51,12 +49,12 @@ public void draw()
     }
   }
   
-  for (int i = 0; i < keyz.length; i++) {
-    if (keyz[i]) {
-      buffaloBill.add(new Bullet(serenity));
-    }
+  // for (int i = 0; i < keyz.length; i++) {
+  //   if (keyz[i]) {
+  //     buffaloBill.add(new Bullet(serenity));
+  //   }
 
-  }
+  // }
 
 
   outer:  
@@ -119,23 +117,23 @@ public void keyPressed()
     if(keyCode == TAB)
     {
       // key
-      // buffaloBill.add(new Bullet(serenity));
-      keyz[0] = true;
+      buffaloBill.add(new Bullet(serenity));
+      // keyz[0] = true;
       // keyz[1] = true;
 
     }
 
 }
-void keyReleased() {
-  if(keyCode == TAB)
-    {
-      // key
-      // buffaloBill.add(new Bullet(serenity));
-      keyz[0] = false;
-      // keyz[1] = false;
+// void keyReleased() {
+//   if(keyCode == TAB)
+//     {
+//       // key
+//       // buffaloBill.add(new Bullet(serenity));
+//       keyz[0] = false;
+//       // keyz[1] = false;
 
-    }
-}
+//     }
+// }
 
 class Stars 
 {
