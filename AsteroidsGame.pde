@@ -99,8 +99,8 @@ public void keyPressed()
     }
     if(keyCode == UP)
     {
-      serenity.accelerate(.5);
       serenity.booster();
+      serenity.accelerate(.5);
     }
     if(keyCode == DOWN)
     {
@@ -114,26 +114,14 @@ public void keyPressed()
       serenity.setDirectionY(0);
       serenity.setPointDirection((int)(Math.random()*360));
     }
-    if(keyCode == TAB)
+    if(keyCode == CONTROL)
     {
-      // key
-      buffaloBill.add(new Bullet(serenity));
-      // keyz[0] = true;
-      // keyz[1] = true;
 
+      buffaloBill.add(new Bullet(serenity));
     }
 
 }
-// void keyReleased() {
-//   if(keyCode == TAB)
-//     {
-//       // key
-//       // buffaloBill.add(new Bullet(serenity));
-//       keyz[0] = false;
-//       // keyz[1] = false;
 
-//     }
-// }
 
 class Stars 
 {
