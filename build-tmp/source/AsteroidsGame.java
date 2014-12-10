@@ -345,7 +345,7 @@ class SpaceShip extends Floater
   {
     fill(0);   
     stroke(255, 174, 61);    
-    strokeWeight(2);
+    strokeWeight(3);
     //convert degrees to radians for sin and cos         
     double dRadians = myPointDirection*(Math.PI/180);                 
     int xRotatedTranslated, yRotatedTranslated;    
@@ -368,7 +368,7 @@ class SpaceShip extends Floater
   {             
     stroke(242, 5, 5);   
     fill(0);    
-    strokeWeight(4);
+    strokeWeight(3);
     //convert degrees to radians for sin and cos         
     double dRadians = myPointDirection*(Math.PI/180);                 
     int xRotatedTranslated, yRotatedTranslated;    
